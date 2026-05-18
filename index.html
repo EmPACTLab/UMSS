@@ -5,9 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLMind</title>
     <meta name="description" content="LLMind: Bio-inspired Training-free Adaptive Visual Representations for Vision-Language Models">
+    <script>
+        (function () {
+            const themes = [
+                { name: "Navy", accent: "#1f3a5f", soft: "#3a5e90", rgb: "31, 58, 95", blob: "#8ea5c5" },
+                { name: "Pink", accent: "#82073c", soft: "#a11258", rgb: "130, 7, 60", blob: "#bb6a8d" },
+                { name: "Dark Green", accent: "#1f6b46", soft: "#309965", rgb: "31, 107, 70", blob: "#84c5a3" },
+                { name: "Dark Brown", accent: "#5c4033", soft: "#8a624d", rgb: "92, 64, 51", blob: "#c6ab99" },
+                { name: "Dark Orange", accent: "#b34700", soft: "#d4651a", rgb: "179, 71, 0", blob: "#d79a72" },
+                { name: "Dark Violet", accent: "#4b2e83", soft: "#7050ad", rgb: "75, 46, 131", blob: "#ae9bcc" },
+            ];
+            const selected = themes[Math.floor(Math.random() * themes.length)];
+            const root = document.documentElement;
+            root.style.setProperty("--accent", selected.accent);
+            root.style.setProperty("--accent-soft", selected.soft);
+            root.style.setProperty("--accent-rgb", selected.rgb);
+            root.style.setProperty("--accent-blob", selected.blob);
+            try {
+                localStorage.setItem("llmindAccentTheme", JSON.stringify(selected));
+            } catch (err) {
+                /* no-op */
+            }
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="files/icons/box.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -19,7 +42,7 @@
                     <span>LLMind</span>
                 </h1>
                 <p class="subtitle animate-in animate-in--2">Bio-inspired Training-free Adaptive Visual Representations for<br>Vision-Language Models</p>
-                <p class="venue animate-in animate-in--3"><span>CVPR 2026</span></p>
+                <p class="venue animate-in animate-in--3"><span>CVPR 2026 HIGHLIGHT</span></p>
                 <div class="title-rule animate-in animate-in--4" aria-hidden="true"></div>
 
                 <div class="authors animate-in animate-in--5">
@@ -62,13 +85,13 @@
                         </span>
                         <span>Paper</span>
                     </a>
-                    <a href="">
+                    <a href="https://www.youtube.com/watch?v=VJ4t-UOlpLQ">
                         <span class="link-icon" aria-hidden="true">▶</span>
-                        <span>Video (Coming Soon)</span>
+                        <span>Video</span>
                     </a>
-                    <a href="">
+                    <a href="https://github.com/SoumyaratnaDebnath/LLMind-CVPR-2026">
                         <span class="link-icon" aria-hidden="true">&lt;/&gt;</span>
-                        <span>Code (Coming Soon)</span>
+                        <span>Code</span>
                     </a>
                     <a href="./files/docs/LLMind_supp.pdf">
                         <span class="link-icon" aria-hidden="true">⊕</span>
@@ -97,9 +120,9 @@
                 </div>
             </section>
 
-            <section class="section reveal" data-reveal style="margin-top: 30px;">
+            <section class="section reveal" data-reveal>
                 <div class="section__header">
-                    <h2>Motivation</h2>
+                    <h2 style="margin-top: 25pt">Motivation</h2>
                 </div>
                 <p class="body-text">
                     Modern Vision-Language Models typically process images using <strong>uniform spatial sampling</strong>, allocating <strong>equal resolution to every region</strong> regardless of its relevance. However, <strong>human vision operates differently</strong>: it concentrates <strong>high resolution in a small foveal region</strong> while maintaining <strong>coarse peripheral awareness</strong>, dynamically shifting attention to informative parts of a scene. Inspired by this principle, <strong>LLMind introduces a bio-inspired adaptive sampling strategy</strong> that <strong>redistributes spatial resolution across the image</strong>, magnifying <strong>semantically important regions</strong> while compressing <strong>less informative areas</strong> to enable <strong>efficient reasoning under strict pixel budgets</strong>.
@@ -132,7 +155,7 @@
 
                         <article class="info-card info-card--accent">
                             <p class="card-kicker">Component 02</p>
-                            <h3 class="card-title">Closed-loop Semantic Feedback <br>(CSF)</h3>
+                            <h3 class="card-title">Closed-loop Semantic Feedback (CSF)</h3>
                             <p class="card-body">
                                 <strong>CSF adds an inference-time semantic feedback loop</strong>. Instead of relying only on perceptual similarity, LLMind evaluates predicted answers and uses that signal to adjust sampling parameters.
                             </p>
@@ -160,7 +183,7 @@
                 </div>
                 <div class="results-shell">
                     <p class="section-kicker">VQA Accuracy Under Pixel Constraints</p>
-                    <p class="panel-text results-intro" style="margin-top: -10px">
+                    <p class="panel-text results-intro">
                         Performance comparison across <strong>VQAv2</strong>, <strong>A-OKVQA</strong>, and <strong>Seed Bench</strong> at <strong>1%</strong>, <strong>3%</strong>, and <strong>5%</strong> pixel budgets. Each card reports one VLM, with <strong>LLMind (Ours)</strong> highlighted against alternative sampling strategies.
                     </p>
                     <div class="results-legend">
@@ -180,10 +203,10 @@
                 </div>
                 <div class="results-shell">
                     <p class="section-kicker">Optimization Dynamics</p>
-                    <p class="panel-text results-intro" style="margin-top: -20px">
+                    <p class="panel-text results-intro">
                         The video below illustrates how <strong>LLMind iteratively refines its sampling strategy</strong> during inference, progressively reallocating visual resolution toward <strong>question-relevant regions</strong> as optimization proceeds.
                     </p>
-                    <figure class="media-frame media-frame--video" style="margin-top: -5px">
+                    <figure class="media-frame media-frame--video">
                         <video class="media-frame__video" controls preload="metadata" playsinline>
                             <source src="files/videos/LLMind-Optimization.mp4" type="video/mp4">
                             Your browser does not support the video tag.
@@ -638,7 +661,7 @@
                 const labelPoint = radarPoint(angles[index], radarRadius + 28);
                 const lines = category.split("\n");
                 ctx.fillStyle = "#4a5068";
-                ctx.font = "600 10px 'Source Sans 3', sans-serif";
+                ctx.font = "600 10px 'Manrope', sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 lines.forEach((line, lineIndex) => {

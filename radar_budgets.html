@@ -5,128 +5,170 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A-OKVQA Category-wise Performance — Pixel Budgets</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    const themes = [
+      { accent: "#1f3a5f", soft: "#3a5e90", rgb: "31, 58, 95", blob: "#8ea5c5" },
+      { accent: "#82073c", soft: "#a11258", rgb: "130, 7, 60", blob: "#bb6a8d" },
+      { accent: "#1f6b46", soft: "#309965", rgb: "31, 107, 70", blob: "#84c5a3" },
+      { accent: "#5c4033", soft: "#8a624d", rgb: "92, 64, 51", blob: "#c6ab99" },
+      { accent: "#b34700", soft: "#d4651a", rgb: "179, 71, 0", blob: "#d79a72" },
+      { accent: "#4b2e83", soft: "#7050ad", rgb: "75, 46, 131", blob: "#ae9bcc" },
+    ];
+    let selected = null;
+    try {
+      selected = JSON.parse(localStorage.getItem("llmindAccentTheme") || "null");
+    } catch (err) {}
+    if (!selected) {
+      selected = themes[Math.floor(Math.random() * themes.length)];
+      try { localStorage.setItem("llmindAccentTheme", JSON.stringify(selected)); } catch (err) {}
+    }
+    const root = document.documentElement;
+    root.style.setProperty("--accent", selected.accent);
+    root.style.setProperty("--accent-soft", selected.soft);
+    root.style.setProperty("--accent-rgb", selected.rgb);
+  })();
+</script>
 <style>
   :root {
-    --bg: #f0f2f8;
-    --surface: #ffffff;
-    --border: #e0e4f0;
-    --text: #1a1d27;
-    --muted: #8890aa;
+    --bg: #f4f7fd;
+    --surface: rgba(255, 255, 255, 0.9);
+    --border: rgba(20, 35, 64, 0.12);
+    --text: #1a2c4b;
+    --muted: #5f7091;
     --c-full: #7eb87e;
     --c-llmind: #f07050;
     --c-uniform: #888077;
+    --accent: #82073c;
+    --accent-soft: #a11258;
+    --accent-rgb: 130, 7, 60;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--bg);
+    background:
+      radial-gradient(760px 300px at -8% -10%, rgba(var(--accent-rgb), 0.14), transparent 65%),
+      radial-gradient(720px 300px at 112% -8%, rgba(217, 131, 78, 0.13), transparent 62%),
+      linear-gradient(165deg, #f7faff 0%, var(--bg) 100%);
     color: var(--text);
     font-family: 'Outfit', sans-serif;
-    padding: 44px 28px 60px;
+    padding: 26px 14px 34px;
     min-height: 100vh;
   }
 
   header { text-align: center; margin-bottom: 10px; }
+
   header h1 {
-    font-size: 1.45rem;
+    font-size: clamp(1.08rem, 2.7vw, 1.36rem);
     font-weight: 700;
-    letter-spacing: -0.01em;
     color: var(--text);
-  }
-  header p {
-    font-size: 0.82rem;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    margin-top: 5px;
-    margin-bottom: 26px;
+    letter-spacing: 0.01em;
   }
 
-  /* Top legend */
+  header p {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 4px;
+    margin-bottom: 18px;
+    letter-spacing: 0.03em;
+  }
+
   .legend {
     display: flex;
-    gap: 28px;
+    gap: 10px;
     justify-content: center;
-    margin-bottom: 36px;
+    margin-bottom: 18px;
     flex-wrap: wrap;
   }
+
   .legend-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.82rem;
+    font-size: 0.76rem;
     color: var(--text);
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    padding: 6px 14px;
-    border-radius: 99px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    transition: box-shadow 0.15s, border-color 0.15s;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.7);
+    transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
     user-select: none;
   }
-  .legend-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+
+  .legend-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(17, 32, 58, 0.1);
+  }
+
   .legend-item.active { border-color: currentColor; }
+  .legend-item:not(.active) { opacity: 0.45; }
+
   .legend-dot {
-    width: 11px; height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
-  /* Charts row */
   .charts-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 28px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .chart-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 28px 22px 20px;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.055);
+    border-radius: 16px;
+    padding: 14px 10px 10px;
+    box-shadow: 0 10px 22px rgba(16, 32, 58, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: box-shadow 0.2s;
+    backdrop-filter: blur(6px);
   }
-  .chart-card:hover { box-shadow: 0 6px 32px rgba(0,0,0,0.10); }
 
   .card-label {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 16px;
-    letter-spacing: 0.01em;
-  }
-  .card-sub {
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-family: 'DM Mono', monospace;
-    color: var(--muted);
-    margin-top: -10px;
-    margin-bottom: 14px;
+    font-weight: 700;
+    color: #1f355b;
+    margin-bottom: 8px;
   }
 
-  canvas { display: block; cursor: crosshair; }
+  .card-sub {
+    display: none;
+  }
 
-  /* Tooltip */
+  canvas { display: block; cursor: crosshair; width: 100%; height: auto; max-width: 320px; }
+
   .tooltip {
     position: fixed;
-    background: #1a1d27;
-    color: #f0f2f8;
-    padding: 9px 13px;
-    border-radius: 9px;
-    font-size: 0.73rem;
+    background: #152644;
+    color: #f7faff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.68rem;
     font-family: 'DM Mono', monospace;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.12s;
     z-index: 200;
-    line-height: 1.7;
+    line-height: 1.65;
     white-space: nowrap;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 20px rgba(16, 32, 58, 0.2);
+  }
+
+  @media (max-width: 1080px) {
+    .charts-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 720px) {
+    .charts-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>

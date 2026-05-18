@@ -5,139 +5,250 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prediction Outcomes — Pixel Budgets</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    const themes = [
+      { accent: "#1f3a5f", soft: "#3a5e90", rgb: "31, 58, 95", blob: "#8ea5c5" },
+      { accent: "#82073c", soft: "#a11258", rgb: "130, 7, 60", blob: "#bb6a8d" },
+      { accent: "#1f6b46", soft: "#309965", rgb: "31, 107, 70", blob: "#84c5a3" },
+      { accent: "#5c4033", soft: "#8a624d", rgb: "92, 64, 51", blob: "#c6ab99" },
+      { accent: "#b34700", soft: "#d4651a", rgb: "179, 71, 0", blob: "#d79a72" },
+      { accent: "#4b2e83", soft: "#7050ad", rgb: "75, 46, 131", blob: "#ae9bcc" },
+    ];
+    let selected = null;
+    try {
+      selected = JSON.parse(localStorage.getItem("llmindAccentTheme") || "null");
+    } catch (err) {}
+    if (!selected) {
+      selected = themes[Math.floor(Math.random() * themes.length)];
+      try { localStorage.setItem("llmindAccentTheme", JSON.stringify(selected)); } catch (err) {}
+    }
+    const root = document.documentElement;
+    root.style.setProperty("--accent", selected.accent);
+    root.style.setProperty("--accent-soft", selected.soft);
+    root.style.setProperty("--accent-rgb", selected.rgb);
+  })();
+</script>
 <style>
   :root {
-    --bg: #f0f2f8;
-    --surface: #ffffff;
-    --border: #e0e4f0;
-    --text: #1a1d27;
-    --muted: #7a8099;
+    --bg: #f5f8fd;
+    --surface: rgba(255, 255, 255, 0.9);
+    --border: rgba(20, 35, 64, 0.12);
+    --text: #13213a;
+    --muted: #5f6f8f;
     --correct: #6ab187;
     --wrong: #e8716a;
     --partial: #f0c355;
-    --correct-dark: #3d7a5a;
-    --wrong-dark: #b83028;
-    --partial-dark: #a07010;
+    --correct-dark: #2f7a57;
+    --wrong-dark: #a93c35;
+    --partial-dark: #986411;
+    --accent: #82073c;
+    --accent-soft: #a11258;
+    --accent-rgb: 130, 7, 60;
   }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    background: #ffffff;
+    background:
+      radial-gradient(680px 260px at -10% -15%, rgba(var(--accent-rgb), 0.14), transparent 64%),
+      radial-gradient(640px 260px at 110% -10%, rgba(217, 131, 78, 0.14), transparent 62%),
+      linear-gradient(165deg, #f6f9ff 0%, var(--bg) 100%);
     font-family: 'Outfit', sans-serif;
     color: var(--text);
-    padding: 40px 28px 60px;
+    padding: 30px 18px 44px;
   }
-  h1 {
-    text-align: center;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .subtitle {
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    margin-bottom: 28px;
-  }
-  /* Top legend */
-  .legend {
-    display: flex; gap: 20px; justify-content: center;
-    flex-wrap: wrap; margin-bottom: 36px;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 0.82rem; font-weight: 500; color: var(--text);
-    padding: 6px 16px;
-    border-radius: 99px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-  }
-  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 
-  /* Budget tabs */
   .tabs {
-    display: flex; gap: 8px; justify-content: center;
-    margin-bottom: 32px; flex-wrap: wrap;
-  }
-  .tab {
-    padding: 8px 22px; border-radius: 99px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    font-size: 0.85rem; font-weight: 600;
-    cursor: pointer; color: var(--muted);
-    transition: all 0.15s;
-  }
-  .tab.active {
-    background: var(--text); color: #fff;
-    border-color: var(--text);
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
   }
 
-  /* Chart pair */
-  .pair {
-    display: flex; gap: 32px; justify-content: center;
-    flex-wrap: wrap; align-items: flex-start;
+  .tab {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.72);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    color: var(--muted);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
   }
+
+  .tab.active {
+    background: linear-gradient(120deg, var(--accent), var(--accent-soft));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 8px 16px rgba(var(--accent-rgb), 0.25);
+  }
+
+  .tab:not(.active):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(18, 35, 64, 0.08);
+  }
+
+  .pair {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
   .chart-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 18px;
-    padding: 28px 24px 22px;
-    display: flex; flex-direction: column; align-items: center;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.055);
-    width: 280px;
-    transition: box-shadow 0.2s;
+    padding: 20px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 10px 22px rgba(16, 32, 58, 0.1);
+    width: min(100%, 294px);
+    backdrop-filter: blur(6px);
   }
-  .chart-wrap:hover { box-shadow: 0 6px 32px rgba(0,0,0,0.10); }
+
   .chart-name {
-    font-size: 0.88rem; font-weight: 700;
-    color: var(--text); margin-bottom: 18px;
-    letter-spacing: 0.01em;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1d3359;
+    margin-bottom: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
   }
+
   .donut-container {
-    position: relative; width: 190px; height: 190px;
+    position: relative;
+    width: 190px;
+    height: 190px;
   }
+
   canvas { display: block; }
+
   .donut-center {
-    position: absolute; top: 50%; left: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    text-align: center; pointer-events: none;
+    text-align: center;
+    pointer-events: none;
   }
+
   .donut-center .center-label {
-    font-size: 0.65rem; color: var(--muted);
-    font-family: 'DM Mono', monospace; letter-spacing: 0.04em;
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
+
   .donut-center .center-value {
-    font-size: 1.5rem; font-weight: 700;
+    font-size: 1.42rem;
+    font-weight: 700;
     color: var(--correct-dark);
-    line-height: 1.1;
+    line-height: 1.08;
   }
 
-  /* Stat bars below each donut */
-  .stat-bars { width: 100%; margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
-  .stat-row { display: flex; align-items: center; gap: 8px; }
-  .stat-label { font-size: 0.72rem; color: var(--muted); width: 90px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
-  .stat-track { flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
-  .stat-fill { height: 100%; border-radius: 99px; transition: width 0.5s cubic-bezier(.23,1,.32,1); }
-  .stat-val { font-size: 0.72rem; font-weight: 600; width: 30px; text-align: right; font-family: 'DM Mono', monospace; }
+  .stat-bars {
+    width: 100%;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-  /* Comparison delta strip */
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-label {
+    font-size: 0.68rem;
+    color: var(--muted);
+    width: 85px;
+    font-family: 'DM Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .stat-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(20, 35, 64, 0.12);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .stat-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.23, 1, .32, 1);
+  }
+
+  .stat-val {
+    font-size: 0.68rem;
+    font-weight: 700;
+    width: 32px;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+  }
+
   .delta-strip {
-    display: flex; gap: 12px; justify-content: center;
-    flex-wrap: wrap; margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 18px auto 0;
+    width: 100%;
   }
+
+  .delta-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+
   .delta-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 14px 20px;
+    padding: 12px 8px;
     text-align: center;
-    min-width: 130px;
+    box-shadow: 0 8px 16px rgba(16, 32, 58, 0.07);
   }
-  .delta-card .d-label { font-size: 0.7rem; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
-  .delta-card .d-val { font-size: 1.3rem; font-weight: 700; }
+
+  .delta-card .d-label {
+    font-size: 0.62rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .delta-card .d-val {
+    font-size: 1.12rem;
+    font-weight: 700;
+  }
+
   .delta-pos { color: var(--correct-dark); }
   .delta-neg { color: var(--wrong-dark); }
+
+  @media (max-width: 680px) {
+    body { padding: 24px 12px 34px; }
+
+    .delta-row {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+  }
 </style>
 </head>
 <body>
@@ -299,14 +410,14 @@ function buildChart(idx) {
   strip.appendChild(intro);
 
   const row = document.createElement('div');
-  row.style.cssText = 'display:flex;gap:12px;justify-content:center;flex-wrap:wrap;';
+  row.className = 'delta-row';
   deltaData.forEach(d => {
     const card = document.createElement('div');
     card.className = 'delta-card';
     const sign  = d.val > 0 ? '+' : '';
     const improved = d.betterWhenHigher ? d.val > 0 : d.val < 0;
     const cls = improved ? 'delta-pos' : 'delta-neg';
-    card.innerHTML = `<div class="d-label">${d.label}</div><div class="d-val ${cls}">${sign}${d.val}pp</div>`;
+    card.innerHTML = `<div class="d-label">${d.label}</div><div class="d-val ${cls}">${sign}${d.val}%</div>`;
     row.appendChild(card);
   });
   strip.appendChild(row);
