@@ -202,7 +202,7 @@ img { max-width: 100%; }
 .motivation-figure { margin: 0; border-radius: 22px; overflow: hidden; }
 .motivation-image { display: block; width: 100%; height: auto; padding: 16px; background: #ffffff; }
 .motivation-figure figcaption { border-top: 1px solid rgba(17,26,44,0.08); padding: 12px 18px 15px; font-size: 0.91rem; line-height: 1.55; font-weight: 650; color: var(--muted); }
-.motivation-copy, .motivation-figure, .info-panel, .info-card, .contribution-card, .bibtex-card, .download-card, .media-frame {
+.motivation-copy, .motivation-figure, .info-panel, .info-card, .contribution-card, .download-card, .media-frame {
     border: 1px solid var(--card-border);
     background: var(--surface);
     backdrop-filter: blur(8px);
@@ -238,9 +238,6 @@ figcaption { padding: 10px 12px 14px; color: var(--muted); font-weight: 700; tex
 .download-card p { margin-bottom: 0; color: #40506a; }
 .download-card a { font-weight: 800; }
 
-.bibtex-card { border-radius: 22px; padding: clamp(18px, 2.8vw, 26px); }
-.bibtex-block { margin: 0; padding: 16px 18px; overflow-x: auto; border: 1px solid rgba(17,26,44,0.12); border-radius: 14px; background: #f5f8fd; color: #243149; font-family: "Space Mono", "SFMono-Regular", Menlo, monospace; font-size: 0.84rem; line-height: 1.72; }
-.bibtex-block code { font: inherit; }
 .footer { padding: 0 0 30px; color: #60718d; font-size: 0.92rem; text-align: center; }
 
 .animate-in { opacity: 0; transform: translateY(24px); animation: fadeUp 840ms cubic-bezier(0.22,1,0.36,1) forwards; }
@@ -274,7 +271,7 @@ figcaption { padding: 10px 12px 14px; color: var(--muted); font-weight: 700; tex
     .affiliation { font-size: 0.98rem; }
     .author-pill { flex-basis: calc(50% - 8px); min-width: 128px; }
     .section__header h2 { font-size: clamp(1.36rem, 6vw, 1.8rem); }
-    .motivation-copy, .motivation-figure, .info-panel, .info-card, .contribution-card, .download-card, .bibtex-card, .media-frame { border-radius: 18px; }
+    .motivation-copy, .motivation-figure, .info-panel, .info-card, .contribution-card, .download-card, .media-frame { border-radius: 18px; }
 }
 @media (max-width: 520px) {
     .author-pill, .links a { flex-basis: 100%; max-width: none; }
